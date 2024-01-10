@@ -445,7 +445,7 @@ begin
   keybd_row_out_s <= keybd_row_out or not keybd_row_oe;
   keybd_col_out_s <= keybd_col_out or not keybd_col_oe;
 
-  keyboard : work.fpga64_keyboard
+  keyboard : entity work.fpga64_keyboard
   port map (
      clk     => I_SYSCLK,
 	  reset   => '0',
@@ -760,7 +760,7 @@ begin
       CONF_DI => conf_di
       );
 
-  ramex0 : work.ram_conf_8192x8
+  ramex0 : entity work.ram_conf_8192x8
     generic map (
       START_AI  => "000"  -- 0x0000 (0x400-0xFFF)
     )
@@ -779,7 +779,7 @@ begin
       CONF_DI => conf_di
     );
 
-  ramex1 : work.ram_conf_8192x8
+  ramex1 : entity work.ram_conf_8192x8
     generic map (
       START_AI  => "001"  -- 0x2000
     )
@@ -798,7 +798,7 @@ begin
       CONF_DI => conf_di
     );
 
-  ramex2 : work.ram_conf_8192x8
+  ramex2 : entity work.ram_conf_8192x8
     generic map (
       START_AI  => "010"  -- 0x4000
     )
@@ -817,7 +817,7 @@ begin
       CONF_DI => conf_di
     );
 
-  ramex3 : work.ram_conf_8192x8
+  ramex3 : entity work.ram_conf_8192x8
     generic map (
       START_AI  => "011"  -- 0x6000
     )
@@ -836,7 +836,7 @@ begin
       CONF_DI => conf_di
     );
 
-  cart : work.ram_conf_8192x8
+  cart : entity work.ram_conf_8192x8
     generic map (
       START_AI  => "101"  -- 0xA000
     )

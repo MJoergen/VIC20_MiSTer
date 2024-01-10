@@ -87,12 +87,12 @@ begin
 
 	conf_en_s <= '1' when (CONF_AI(15 DOWNTO 15-START_AI'left)=START_AI) else '0';
 
-	ram: work.gen_dpram
+   ram: entity work.tdp_ram
 	generic map(11,8)
 	port map
 	(
 		clock_a		=> CLK,
-		enable_a		=> CLK_EN and (NOT(EN1n) or NOT(EN2n)),
+		clen_a		=> CLK_EN and (NOT(EN1n) or NOT(EN2n)),
 		address_a	=> ADDR,
 		data_a		=> DIN,
 		wren_a		=> not WRn,
