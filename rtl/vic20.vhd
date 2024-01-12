@@ -99,7 +99,11 @@ entity VIC20 is
 		i_pal        : in  std_logic;
 		i_wide       : in  std_logic;
 		--
-		ps2_key      : in  std_logic_vector(10 downto 0);
+		-- keyboard interface: directly connect the CIA1
+		cia1_pa_i    : in  std_logic_vector(7 downto 0);
+		cia1_pa_o    : out std_logic_vector(7 downto 0);
+		cia1_pb_i    : in  std_logic_vector(7 downto 0);
+		cia1_pb_o    : out std_logic_vector(7 downto 0);
 		tape_play    : out std_logic;
 		--
 		o_audio      : out std_logic_vector(5 downto 0);
@@ -200,12 +204,10 @@ signal via2_irq           : std_logic;
 
 signal keybd_col_out      : std_logic_vector(7 downto 0);
 signal keybd_col_oe       : std_logic_vector(7 downto 0);
-signal keybd_col_out_s    : std_logic_vector(7 downto 0);
 signal keybd_col_in       : std_logic_vector(7 downto 0);
 signal keybd_row_in       : std_logic_vector(7 downto 0);
 signal keybd_row_out      : std_logic_vector(7 downto 0);
 signal keybd_row_oe       : std_logic_vector(7 downto 0);
-signal keybd_row_out_s    : std_logic_vector(7 downto 0);
 signal keybd_restore      : std_logic;
 
 signal joy                : std_logic_vector(3 downto 0);
@@ -442,40 +444,12 @@ begin
   );
 
   cass_write <= keybd_col_out(3);
-  keybd_row_out_s <= keybd_row_out or not keybd_row_oe;
-  keybd_col_out_s <= keybd_col_out or not keybd_col_oe;
 
-  keyboard : entity work.fpga64_keyboard
-  port map (
-     clk     => I_SYSCLK,
-	  reset   => '0',
-     ps2_key => ps2_key,
+  keybd_row_in <= cia1_pa_i;
+  keybd_col_in <= cia1_pb_i;
+  cia1_pa_o <= keybd_row_out or not keybd_row_oe;
+  cia1_pb_o <= keybd_col_out or not keybd_col_oe;
 
-     pai(7)          => keybd_row_out_s(0),
-	  pai(6 downto 1) => keybd_row_out_s(6 downto 1),
-	  pai(0)          => keybd_row_out_s(7),
-
-     pao(7)          => keybd_row_in(0),
-	  pao(6 downto 1) => keybd_row_in(6 downto 1),
-	  pao(0)          => keybd_row_in(7),
-
-     pbi(7)          => keybd_col_out_s(3),
-	  pbi(6 downto 4) => keybd_col_out_s(6 downto 4),
-	  pbi(3)          => keybd_col_out_s(7),
-	  pbi(2 downto 0) => keybd_col_out_s(2 downto 0),
-
-     pbo(7)          => keybd_col_in(3),
-	  pbo(6 downto 4) => keybd_col_in(6 downto 4),
-	  pbo(3)          => keybd_col_in(7),
-	  pbo(2 downto 0) => keybd_col_in(2 downto 0),
-
-     reset_key   => reset_key,
-     restore_key => keybd_restore,
-	  tape_play   => tape_play,
-
-     backwardsReadingEnabled => '1'
-  );
-  
   p_irq_resolve : process(expansion_irq_l, expansion_nmi_l,
                           via2_irq, via1_nmi)
   begin
