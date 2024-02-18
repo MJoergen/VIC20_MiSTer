@@ -169,6 +169,7 @@ c1541_gcr c1541_gcr
 wire [7:0] dgcr_do, dgcr_sd_buff_dout;
 wire       dgcr_sync_n, dgcr_byte_n, dgcr_we;
 
+/*
 c1541_direct_gcr c1541_direct_gcr
 (
 	.clk(clk),
@@ -192,6 +193,7 @@ c1541_direct_gcr c1541_direct_gcr
 	.sd_buff_din(dgcr_sd_buff_dout),
 	.sd_buff_wr(sd_ack & sd_buff_wr & gcr_mode)
 );
+*/
 
 wire busy;
 

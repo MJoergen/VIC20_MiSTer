@@ -68,6 +68,7 @@ end
 
 endmodule
 
+/*
 module iecdrv_bitmem #(parameter ADDRWIDTH)
 (
 	input	                     clock_a,
@@ -122,3 +123,4 @@ always @(posedge clock_b) begin
 end
 
 endmodule
+*/
