@@ -57,6 +57,7 @@ entity VIC20 is
 		i_sysclk     : in  std_logic;  -- comes from CLK_A via DCM (divided by 4)
 		i_sysclk_en  : in  std_logic;  -- 8.867236 MHz enable signal
 		i_reset      : in  std_logic;
+		i_restore_n  : in  std_logic;
 		o_p2h        : out std_logic;
 
 		-- serial bus pins
@@ -104,7 +105,6 @@ entity VIC20 is
 		cia1_pa_o    : out std_logic_vector(7 downto 0);
 		cia1_pb_i    : in  std_logic_vector(7 downto 0);
 		cia1_pb_o    : out std_logic_vector(7 downto 0);
-		tape_play    : out std_logic;
 		--
 		o_audio      : out std_logic_vector(5 downto 0);
 
@@ -208,7 +208,6 @@ signal keybd_col_in       : std_logic_vector(7 downto 0);
 signal keybd_row_in       : std_logic_vector(7 downto 0);
 signal keybd_row_out      : std_logic_vector(7 downto 0);
 signal keybd_row_oe       : std_logic_vector(7 downto 0);
-signal keybd_restore      : std_logic;
 
 signal joy                : std_logic_vector(3 downto 0);
 signal light_pen          : std_logic;
@@ -234,7 +233,6 @@ signal video_b            : std_logic_vector(3 downto 0);
 signal hsync              : std_logic;
 signal vsync              : std_logic;
 
-signal reset_key          : std_logic;
 signal reset              : std_logic;
 
 signal iec_data_d1        : std_logic;
@@ -288,7 +286,7 @@ begin
   joy <= i_joy;        -- 0 up, 1 down, 2 left,  3 right
   light_pen <= i_fire; -- also used for fire button
 
-  reset <= (i_reset or reset_key);
+  reset <= i_reset;
   reset_l <= not reset;
 
   u_clocks : entity work.VIC20_CLOCKS
@@ -388,7 +386,7 @@ begin
     port_b_i    => user_port_in,
 
     -- handshake pins
-    ca1_i       => keybd_restore,
+    ca1_i       => not i_restore_n,
 
     ca2_o       => motor,
     ca2_i       => motor,
